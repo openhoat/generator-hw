@@ -1,6 +1,6 @@
 {
   "name": "generator-hw",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Yeoman generator that provides templates for using nodejs",
   "files": [
     "generators"
