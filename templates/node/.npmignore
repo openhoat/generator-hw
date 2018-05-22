@@ -1,0 +1,9 @@
+dist/
+.editorconfig
+.eslint*
+.gitignore
+.idea/
+.node-version
+.nyc_output/
+.nycrc
+test/

@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../../generators"
+  },
+  "extends": "../../tsconfig.json"
+}

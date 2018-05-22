@@ -1,0 +1,10 @@
+dist/
+.editorconig
+.gitignore
+.idea/
+.node-version
+.nyc_output/
+.nycrc
+src/
+tsconfig.json
+tslint.json

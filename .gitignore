@@ -1,0 +1,8 @@
+.idea/
+.DS_Store
+.vscode
+.history
+.nyc_output
+dist/
+generators/
+node_modules/

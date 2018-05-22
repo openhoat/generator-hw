@@ -1,0 +1,17 @@
+{
+  "extension": [
+    ".ts"
+  ],
+  "exclude": [
+    "build",
+    "dist",
+    "src/test",
+    "**/*.d.ts"
+  ],
+  "report-dir": "./dist/coverage",
+  "reporter": [
+    "html",
+    "text-summary"
+  ],
+  "all": true
+}

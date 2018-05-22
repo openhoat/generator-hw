@@ -1,0 +1,41 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "rules": {
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape",
+      "avoid-template"
+    ],
+    "import-name": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case",
+      "allow-leading-underscore"
+    ],
+    "ter-arrow-parens": [
+      true,
+      "as-needed"
+    ],
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "no-unused-variable": true,
+    "no-empty-interface": true,
+    "typedef": [
+      true,
+      "parameter",
+      "member-variable-declaration"
+    ]
+  },
+  "extends": "tslint-config-airbnb"
+}

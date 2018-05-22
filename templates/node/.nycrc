@@ -1,0 +1,14 @@
+{
+  "extension": [
+    ".js"
+  ],
+  "include": [
+    "lib"
+  ],
+  "report-dir": "./dist/coverage",
+  "reporter": [
+    "html",
+    "text-summary"
+  ],
+  "all": true
+}
