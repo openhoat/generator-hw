@@ -1,3 +1,5 @@
+[![NPM version](https://badge.fury.io/js/generator-hw.svg)](http://badge.fury.io/js/generator-hw)
+
 # generator-hw
 
 Yeoman generator for creating code projects
