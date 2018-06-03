@@ -1,0 +1,4 @@
+srcDir: .
+libDirname: lib
+testDirname: test
+distDir: dist

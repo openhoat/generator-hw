@@ -4,6 +4,5 @@ dist/
 .gitignore
 .idea/
 .node-version
-.nyc_output/
 .nycrc
 test/

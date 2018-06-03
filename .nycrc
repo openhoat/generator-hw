@@ -5,7 +5,9 @@
   "exclude": [
     "built",
     "dist",
-    "src/test",
+    "generators",
+    "test",
+    "templates",
     "**/*.d.ts"
   ],
   "temp-directory": "./dist/.nyc_output",

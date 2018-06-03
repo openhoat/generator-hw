@@ -5,6 +5,7 @@
   "include": [
     "lib"
   ],
+  "temp-directory": "./dist/.nyc_output",
   "report-dir": "./dist/coverage",
   "reporter": [
     "html",

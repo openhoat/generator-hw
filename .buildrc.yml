@@ -1,0 +1,5 @@
+libDir: lib
+testDir: test
+typesDir: types
+builtDir: generators
+distDir: dist

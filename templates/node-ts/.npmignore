@@ -1,10 +1,11 @@
 dist/
-.editorconig
+.editorconfig
 .gitignore
 .idea/
 .node-version
-.nyc_output/
 .nycrc
-src/
+.travis.yml
+lib/
+test/
 tsconfig.json
 tslint.json

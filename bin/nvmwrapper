@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+nvmDir=${NVM_DIR:-$HOME/.nvm/}
+
+source ${nvmDir}/nvm.sh --no-use
+
+nvm $@

@@ -1,0 +1,17 @@
+compileOnSave: true
+compilerOptions:
+  target: es6
+  module: commonjs
+  moduleResolution: node
+  rootDir: .
+  outDir: '{{ builtDir }}'
+  declaration: true
+  noImplicitAny: true
+  inlineSourceMap: true
+  removeComments: true
+  strictNullChecks: true
+  typeRoots:
+    - node_modules/@types
+    - '{{ typesDir }}'
+include:
+  - '{{ libDir }}/**/*.ts'

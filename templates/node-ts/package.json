@@ -3,23 +3,14 @@
   "version": "0.0.1",
   "description": "<%= typeof description === 'string' ? description : 'Nodejs TypeScript project description to complete' %>",
   "private": true,
-  "main": "build/lib/<%= projectName %>.js",
-  "types": "build/lib/<%= projectName %>",
+  "main": "built/lib/<%= projectName %>.js",
+  "types": "built/lib/<%= projectName %>",
   "scripts": {
-    "clean": "npm run clean:build && npm run clean:dist",
-    "clean:dist": "rimraf dist/**",
-    "clean:build:lib": "rimraf build/lib/**",
-    "clean:build:test": "rimraf build/test/**",
-    "clean:build": "rimraf build/**",
-    "build": "npm run build:lib",
-    "build:lib": "npm run clean:build:lib && cpx src/types/**/*.d.ts build/types/ && tsc -p src/lib",
-    "build:test": "npm run clean:build:test && cpx src/types/**/*.d.ts build/types/ && tsc -p src/test",
-    "prepublishOnly": "npm run build",
-    "lint": "tslint -p .",
-    "test": "mocha --opts src/test/mocha.opts src/test/**/*.test.ts",
-    "cover": "nyc npm test",
-    "check:cover": "nyc npm test -- --forbid-only && nyc check-coverage --lines 80",
-    "check": "npm run clean && npm run build && npm run lint && npm run check:cover"
+    "start": "nps",
+    "build": "nps build",
+    "test": "nps test",
+    "validate": "nps validate",
+    "prepublishOnly": "nps build"
   },
   "author": "<%= authorFirstName %> <%= authorLastName %> <<%= authorEmail %>> (<%= authorWebsite %>)",
   "repository": {
@@ -34,13 +25,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint && npm test -- --forbid-only",
-      "pre-push": "npm run check"
+      "pre-commit": "nps lint && nps 'test -- --forbid-only'",
+      "pre-push": "nps check"
     }
   },
   "dependencies": {
   },
   "devDependencies": {
+    "@headwood/ts-build-template": "0.0.2",
     "@types/chai": "^4.0.10",
     "@types/chai-as-promised": "^7.1.0",
     "@types/es6-promise": "^3.3.0",
@@ -54,6 +46,7 @@
     "cpx": "^1.5.0",
     "husky": "^0.14.3",
     "mocha": "^5.1.1",
+    "nps": "^5.9.0",
     "nyc": "^11.7.3",
     "rimraf": "^2.6.2",
     "sinon": "^5.0.7",

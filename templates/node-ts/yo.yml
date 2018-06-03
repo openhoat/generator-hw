@@ -1,1 +1,1 @@
-mainScript: src/lib/index.ts
+mainScript: lib/index.ts

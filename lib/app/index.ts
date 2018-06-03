@@ -1,11 +1,11 @@
 import * as Generator from 'yeoman-generator'
 import { basename, join, dirname, extname, resolve, relative } from 'path'
-import { get, capitalize, startCase, without } from 'lodash'
+import { get, kebabCase, without } from 'lodash'
 import chalk from 'chalk'
 import { existsSync, readFileSync, statSync } from 'fs'
 import { userInfo } from 'os'
 import { safeLoad } from 'js-yaml'
-import { InstallSteps } from '../../types'
+import { InstallSteps } from '../../types/install-steps'
 import { scanSync, getFilesInSync } from './helper'
 
 const username = userInfo().username
@@ -20,6 +20,7 @@ class CustomGenerator extends Generator {
   protected baseDir: string
   protected files: string[]
   protected projectName: string
+  protected nodeVersion: string
   protected templatesBasedir: string
   protected templateNames: string[]
   protected templateName: string
@@ -49,7 +50,7 @@ class CustomGenerator extends Generator {
     this.installSteps = {
       createGit: {
         title: 'Git creation',
-        process: () => {
+        process() {
           const gitDir = join(this.sourceBasedir, '.git')
           if (!existsSync(gitDir) || !statSync(gitDir).isDirectory()) {
             this.logInfo('no git directory found : ignore')
@@ -58,30 +59,46 @@ class CustomGenerator extends Generator {
           return this.spawnCommandSync('git', ['init']).status
         },
       },
+      addGitRemote: {
+        title: 'Add git remote',
+        process() {
+          const gitDir = join(this.sourceBasedir, '.git')
+          if (!existsSync(gitDir) || !statSync(gitDir).isDirectory()) {
+            this.logInfo('no git directory found : ignore')
+            return 0
+          }
+          return this.spawnCommandSync('git', ['remote', 'add', 'origin', this.gitUrl]).status
+        },
+      },
       installDeps: {
         title: 'Dependencies installation',
-        process: () => this.spawnCommandSync('npm', ['install']).status,
+        process() {
+          return this.spawnCommandSync('nvmwrapper', ['exec', 'npm', 'install']).status
+        },
       },
       buildProject: {
         title: 'Project build',
-        process: () => {
+        process() {
           const hasBuildScript = !!get(this.pkg, 'scripts.build')
           if (!hasBuildScript) {
             this.logInfo('no build script found : ignore')
             return 0
           }
-          return this.spawnCommandSync('npm', ['run', 'build', '-s']).status
+          return this.spawnCommandSync('nvmwrapper', ['exec', 'npm', 'run', 'build', '-s']).status
         },
       },
-      checkProject: {
-        title: 'Project checking',
-        process: () => {
-          const hasCheckScript = !!get(this.pkg, 'scripts.check')
-          if (!hasCheckScript) {
-            this.logInfo('no check script found : ignore')
+      validateProject: {
+        title: 'Project validation',
+        process() {
+          const hasValidateScript = !!get(this.pkg, 'scripts.validate')
+          if (!hasValidateScript) {
+            this.logInfo('no validate script found : ignore')
             return 0
           }
-          return this.spawnCommandSync('npm', ['run', 'check', '-s']).status
+          return this.spawnCommandSync(
+            'nvmwrapper',
+            ['exec', 'npm', 'run', 'validate', '-s'],
+          ).status
         },
       },
     }
@@ -108,7 +125,7 @@ class CustomGenerator extends Generator {
         type: 'input',
         name: 'projectName',
         message: 'Enter a name for the new project: ',
-        default: capitalize(startCase(this.projectName)),
+        default: kebabCase(this.projectName),
       })
     } else {
       this.logInfo(`Project name was specified by argument : ${this.projectName}`)
@@ -123,6 +140,12 @@ class CustomGenerator extends Generator {
       name: 'authorLastName',
       message: 'Enter your last name: ',
       store: true,
+    }, {
+      type: 'input',
+      name: 'username',
+      message: 'Enter your username: ',
+      store: true,
+      default: username,
     }, {
       type: 'input',
       name: 'authorEmail',
@@ -143,6 +166,11 @@ class CustomGenerator extends Generator {
       name: 'issueUrl',
       message: 'Enter issue URL: ',
       default: `https://github.com/${username}/${this.projectName}/issues`,
+    }, {
+      type: 'input',
+      name: 'nodeVersion',
+      message: 'Enter nodejs version: ',
+      default: 'lts/*',
     }]
     this.questions.push(...questions)
   }
@@ -163,6 +191,20 @@ class CustomGenerator extends Generator {
   }
 
   configuring() {
+    this.logInfo(`${checkMark} Installing node version : ${this.nodeVersion}`)
+    this.spawnCommandSync('nvmwrapper', ['install', this.nodeVersion])
+    {
+      const result = this.spawnCommandSync(
+        'nvmwrapper',
+        ['version', this.nodeVersion],
+        { stdio: 'pipe', encoding: 'utf8' },
+      )
+      const realNodeVersion = result.output[1].split('\n')[0]
+      this.logInfo(
+        `${checkMark} Resolving node version "${this.nodeVersion}" to : ${realNodeVersion}`,
+      )
+      this.nodeVersion = realNodeVersion
+    }
     this.logInfo(`${checkMark} Setting destination to : ${this.baseDir}`)
     this.destinationRoot(this.baseDir)
     this.logInfo(`Scanning files from template "${this.templateName}"...`)
@@ -196,7 +238,7 @@ class CustomGenerator extends Generator {
       const noSteps = list.length
       const { title, process } = this.installSteps[name]
       this.logInfo(`Installation step ${index + 1}/${noSteps} : ${title}...`)
-      const exitCode = process()
+      const exitCode = process.call(this)
       if (!exitCode) {
         this.logInfo(`${checkMark} ${index + 1}/${noSteps} done.`)
       } else {

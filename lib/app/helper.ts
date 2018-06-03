@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { join, relative } from 'path'
 import { readdirSync, statSync } from 'fs'
 
@@ -23,20 +24,19 @@ function getFilesInSync(dir: string,
                         options: {
                           onlyDirectories?: boolean,
                           onlyFiles?: boolean,
-                        } = {
-                          onlyDirectories: false,
-                          onlyFiles: false,
                         }): string[] {
   return readdirSync(dir).filter(name => {
-    if (!options.onlyDirectories && !options.onlyFiles) {
+    const onlyDirectories: boolean = get<any, string, boolean>(options, 'onlyDirectories', false)
+    const onlyFiles: boolean = get<any, string, boolean>(options, 'onlyFiles', false)
+    if (!onlyDirectories && !onlyFiles) {
       return true
     }
     const filePath = join(dir, name)
     const stats = statSync(filePath)
-    if (options.onlyDirectories) {
+    if (onlyDirectories) {
       return stats.isDirectory()
     }
-    if (options.onlyFiles) {
+    if (onlyFiles) {
       return stats.isFile()
     }
   })

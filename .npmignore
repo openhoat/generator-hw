@@ -1,7 +1,12 @@
-.editorconig
+.editorconfig
 .gitignore
 .idea/
 .node-version
-src/
+.nycrc
+.travis.yml
+built/
+dist/
+lib/
+test/
 tsconfig.json
 tslint.json

@@ -1,25 +1,40 @@
 {
   "name": "generator-hw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Yeoman generator that provides templates for using nodejs",
   "files": [
     "generators"
   ],
+  "bin": {
+    "nvmwrapper": "bin/nvmwrapper"
+  },
   "scripts": {
-    "postinstall": "postinstall-build generators/app/index.js",
-    "clean": "npm run clean:build && npm run clean:dist",
-    "clean:dist": "rimraf dist/**",
-    "clean:build:lib": "rimraf generators/**",
-    "clean:build": "rimraf build/**",
-    "build": "npm run build:lib",
-    "build:lib": "npm run clean:build:lib && tsc -p src/lib",
-    "prepublishOnly": "npm run build",
-    "lint": "tslint -p .",
-    "check": "npm run clean && npm run build && npm run lint"
+    "start": "nps",
+    "build": "nps build",
+    "test": "nps 'test -- --forbid-only'",
+    "validate": "nps validate",
+    "prepublishOnly": "nps build"
   },
   "keywords": [
     "yeoman-generator"
   ],
+  "author": "Olivier Penhoat <openhoat@gmail.com> (http://headwood.net/)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:openhoat/generator-hw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openhoat/generator-hw/issues"
+  },
+  "engines": {
+    "node": ">= 8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "nps lint && nps 'test -- --forbid-only'",
+      "pre-push": "nps check"
+    }
+  },
   "dependencies": {
     "@types/chalk": "^2.2.0",
     "@types/js-yaml": "^3.11.1",
@@ -28,10 +43,10 @@
     "chalk": "^2.4.1",
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
-    "postinstall-build": "^5.0.1",
     "yeoman-generator": "^2.0.5"
   },
   "devDependencies": {
+    "@headwood/ts-build-template": "0.0.2",
     "@types/chai": "^4.0.10",
     "@types/chai-as-promised": "^7.1.0",
     "@types/es6-promise": "^3.3.0",
@@ -42,8 +57,13 @@
     "@types/sinon-chai": "^2.7.31",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.1",
+    "cpx": "^1.5.0",
+    "husky": "^0.14.3",
     "mocha": "^5.1.1",
+    "nps": "^5.9.0",
     "nyc": "^11.7.3",
+    "proxyquire": "^2.0.1",
     "rimraf": "^2.6.2",
     "sinon": "^5.0.7",
     "sinon-chai": "^3.0.0",
@@ -52,9 +72,6 @@
     "ts-node": "^6.0.3",
     "tslint": "^5.8.0",
     "tslint-config-airbnb": "^5.4.2",
-    "typescript": "^2.6.2",
-    "typescript-eslint-parser": "^15.0.0",
-    "webpack": "^4.8.3",
-    "webpack-dev-server": "^3.1.4"
+    "typescript": "^2.6.2"
   }
 }

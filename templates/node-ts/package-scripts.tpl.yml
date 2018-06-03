@@ -1,0 +1,67 @@
+scripts:
+  clean:
+    default:
+      script: nps clean.built && nps clean.dist
+      description: Clean all the temp directories
+    dist:
+      script: rimraf {{ distDir }}/**
+      description: Clean the dist directory
+    built:
+      default:
+        script: rimraf {{ builtDir }}/**
+        description: Clean the built directory
+  build:
+    default:
+      script: nps clean.built && nps build.generate && nps build.lib.compile && nps build.test.types && nps build.test.compile
+      description: Clean and build the project
+    generate:
+      script: generate-tsconfig tsconfig.tpl.yml {{ libDir }}/tsconfig.tpl.yml {{ testDir }}/tsconfig.tpl.yml
+      description: Generate tsconfig.json
+    lib:
+      default:
+        script: nps clean.built && nps build.generate && nps build.lib.compile
+        description: Clean and build the project lib
+      compile:
+        script: tsc -p {{ libDir }}
+        description: Compile the project lib
+    test:
+      default:
+        script: nps clean.dist && nps build.test.types && nps build.test.compile
+        description: Clean and build the project tests
+      types:
+        script: cpx {{ typesDir }}/**/*.d.ts {{ distDir }}/test-built/types/
+        description: Copy types definitions to dist dir
+      compile:
+        script: tsc -p {{ testDir }}
+        description: Compile the project tests
+  lint:
+    script: tslint -p .
+    description: Validate code quality
+  test:
+    script: mocha --opts {{ testDir }}/mocha.opts {{ testDir }}/**/*.test.ts
+    description: Run tests
+  cover:
+    default:
+      script: if [ "$TRAVIS" = "true" ]; then nps cover.travis; else nps cover.local; fi
+      description: Run test coverage
+    local:
+      script: nyc nps "test --forbid-only"
+      description: Run local test coverage
+    travis:
+      script: nps cover.local && nps cover.report.travis
+      description: Run travis test coverage
+    report:
+      travis:
+        script: nyc report --reporter=text-lcov | coveralls
+        description: Build travis coverage report
+  validate:
+    default:
+      script: nps clean && nps build && nps lint && nps validate.cover
+      description: Validate project
+    cover:
+      default:
+        script: nps cover && nps validate.cover.check
+        description: Run test and validate coverage
+      check:
+        script: nyc check-coverage --lines 80
+        description: Validate code coverage
